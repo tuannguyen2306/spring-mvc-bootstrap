@@ -4,6 +4,7 @@ import com.spring.bookstore.entity.BookEntity;
 import com.spring.bookstore.entity.CategoryEntity;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,13 +14,14 @@ import java.util.List;
  */
 @Repository
 public class BookRepositoryImpl implements BookRepository{
-    List<BookEntity> listBook;
+    List<BookEntity> bookList;
 
+    @PostConstruct
     public void init(){
         final CategoryEntity categoryIT = new CategoryEntity( 1,"IT", "IT Boook");
         final CategoryEntity categoryMath = new CategoryEntity(2, "Math", "Mathematic books");
 
-        listBook = new ArrayList<BookEntity>(){{
+        bookList = new ArrayList<BookEntity>(){{
           add( new BookEntity(1, "Java A-Z", "Roger",
                   "9971-5-0210-0", 12.3, new Date(), categoryIT));
           add( new BookEntity(2, "PHP A-Z", "Bill",
@@ -33,6 +35,42 @@ public class BookRepositoryImpl implements BookRepository{
 
     @Override
     public List<BookEntity> findALL() {
-        return listBook;
+        return bookList;
     }
+
+    @Override
+    public List<BookEntity> search(String searchInput) {
+        searchInput = searchInput.toLowerCase();
+        List<BookEntity> resultList = new ArrayList<>();
+        for (BookEntity book: bookList) {
+            if (book.getName().toLowerCase().contains(searchInput)
+                    || book.getAuthor().toLowerCase().contains(searchInput)
+                    || book.getIsbn().toLowerCase().contains(searchInput)){
+                    resultList.add(book);
+            }
+        }
+        return resultList;
+    }
+
+    @Override
+    public void deleteById(int id) {
+        bookList.remove(new BookEntity(id));
+    }
+
+    @Override
+    public void save(BookEntity book) {
+
+    }
+
+    @Override
+    public BookEntity findOne(int id) {
+        return null;
+    }
+
+    @Override
+    public void update(BookEntity book) {
+
+    }
+
+
 }
